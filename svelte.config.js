@@ -3,7 +3,6 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 const config = {
   preprocess: vitePreprocess(),
-
   kit: {
     adapter: adapter({
       pages: 'build',
@@ -11,10 +10,7 @@ const config = {
       fallback: 'index.html'
     }),
     paths: {
-      base: ''
-    },
-    prerender: {
-      entries: ['*']
+      base: '' // para vercel, no uses '/todoeste'
     }
   }
 };
