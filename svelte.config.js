@@ -1,16 +1,12 @@
-import adapter from '@sveltejs/adapter-static';
+import vercel from '@sveltejs/adapter-vercel';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 const config = {
   preprocess: vitePreprocess(),
   kit: {
-    adapter: adapter({
-      pages: 'build',
-      assets: 'build',
-      fallback: 'index.html'
-    }),
+    adapter: vercel(), // ✅ Cambiado de adapter-static a vercel
     paths: {
-      base: '' // para vercel, no uses '/todoeste'
+      base: '' // 👈 se queda así
     }
   }
 };
