@@ -11,7 +11,7 @@ const config = {
       fallback: 'index.html'
     }),
     paths: {
-      base: '/todoeste'
+      base: ''
     },
     prerender: {
       entries: ['*']
