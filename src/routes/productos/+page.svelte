@@ -1,67 +1,75 @@
 <script lang="ts">
-  import Filtros from '$lib/components/Filtros.svelte';
-  import ProductoCard from '$lib/components/ProductoCard.svelte';
-  import { loadProductosCSV } from '$lib/utils/loadCSV';
-  import { page } from '$app/stores';
-  import { get } from 'svelte/store';
-  import { onMount, onDestroy } from 'svelte';
+	import Filtros from '$lib/components/Filtros.svelte';
+	import ProductoCard from '$lib/components/ProductoCard.svelte';
+	import productosStore from '$lib/stores/productos';
+	import { page } from '$app/stores';
+	import { get } from 'svelte/store';
+	import { onMount, onDestroy } from 'svelte';
 
-  let productos: any[] = [];
-  let productosFiltrados: any[] = [];
-  let cargado = false;
+	let productos: any[] = [];
+	let productosFiltrados: any[] = [];
 
-  let precioMin = '';
-  let precioMax = '';
-  let orden = '';
+	let precioMin = '';
+	let precioMax = '';
+	let orden = '';
 
-  function aplicarFiltrosPersonalizados(event) {
-    const { precioMin: min, precioMax: max, orden: ordenamiento } = event.detail;
-    precioMin = min;
-    precioMax = max;
-    orden = ordenamiento;
-    aplicarFiltros();
-  }
+	function aplicarFiltrosPersonalizados(event) {
+		const { precioMin: min, precioMax: max, orden: ordenamiento } = event.detail;
+		precioMin = min;
+		precioMax = max;
+		orden = ordenamiento;
+		aplicarFiltros();
+	}
 
-  function aplicarFiltros() {
-    const $pageData = get(page);
-    const categoria = $pageData.url.searchParams.get('categoria');
+	function aplicarFiltros() {
+		const $pageData = get(page);
+		const categoria = $pageData.url.searchParams.get('categoria');
 
-    let resultado = productos.filter((p) => {
-      const matchCategoria = !categoria || p.categoria.toLowerCase().includes(categoria.toLowerCase());
-      const precio = parseFloat(p.precio);
-      const matchMin = !precioMin || precio >= parseFloat(precioMin);
-      const matchMax = !precioMax || precio <= parseFloat(precioMax);
-      return matchCategoria && matchMin && matchMax;
-    });
+		let resultado = productos.filter((p) => {
+			const matchCategoria = !categoria || p.categoria.toLowerCase().includes(categoria.toLowerCase());
+			const precio = parseFloat(p.precio);
+			const matchMin = !precioMin || precio >= parseFloat(precioMin);
+			const matchMax = !precioMax || precio <= parseFloat(precioMax);
+			return matchCategoria && matchMin && matchMax;
+		});
 
-    if (orden === 'precioAsc') resultado.sort((a, b) => parseFloat(a.precio) - parseFloat(b.precio));
-    else if (orden === 'precioDesc') resultado.sort((a, b) => parseFloat(b.precio) - parseFloat(a.precio));
-    else if (orden === 'nombreAsc') resultado.sort((a, b) => a.nombre.localeCompare(b.nombre));
-    else if (orden === 'nombreDesc') resultado.sort((a, b) => b.nombre.localeCompare(a.nombre));
+		if (orden === 'precioAsc') resultado.sort((a, b) => parseFloat(a.precio) - parseFloat(b.precio));
+		else if (orden === 'precioDesc') resultado.sort((a, b) => parseFloat(b.precio) - parseFloat(a.precio));
+		else if (orden === 'nombreAsc') resultado.sort((a, b) => a.nombre.localeCompare(b.nombre));
+		else if (orden === 'nombreDesc') resultado.sort((a, b) => b.nombre.localeCompare(a.nombre));
 
-    productosFiltrados = resultado;
-  }
+		productosFiltrados = resultado;
+	}
 
-  function filtrar($page) {
-    const categoria = $page.url.searchParams.get('categoria');
-    productosFiltrados = categoria
-      ? productos.filter((p) => p.categoria.toLowerCase().includes(categoria.toLowerCase()))
-      : productos;
-  }
+	function filtrar($page) {
+		const categoria = $page.url.searchParams.get('categoria');
+		productosFiltrados = categoria
+			? productos.filter((p) => p.categoria.toLowerCase().includes(categoria.toLowerCase()))
+			: productos;
+	}
 
-  onMount(async () => {
-    productos = await loadProductosCSV();
-    cargado = true;
-    filtrar(get(page));
-  });
+	let unsubscribeProductos;
+	let unsubscribePage;
 
-  const unsubscribe = page.subscribe(($page) => {
-    if (cargado) filtrar($page);
-  });
+	onMount(() => {
+		unsubscribeProductos = productosStore.subscribe((data) => {
+			if (data.length > 0) {
+				productos = data;
+				filtrar(get(page));
+			}
+		});
 
-  onDestroy(() => {
-    unsubscribe();
-  });
+		unsubscribePage = page.subscribe(($page) => {
+			if (productos.length > 0) {
+				filtrar($page);
+			}
+		});
+	});
+
+	onDestroy(() => {
+		unsubscribeProductos?.();
+		unsubscribePage?.();
+	});
 </script>
 
 <h1 class="text-3xl font-bold text-center mt-6 text-green-700">Productos</h1>

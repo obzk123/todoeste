@@ -1,25 +1,38 @@
 <script lang="ts">
-  import { page } from '$app/stores';
-  import { onMount } from 'svelte';
-  import { loadProductosCSV } from '$lib/utils/loadCSV';
+	import { page } from '$app/stores';
+	import { onDestroy } from 'svelte';
+	import productos from '$lib/stores/productos';
+	import { get } from 'svelte/store';
 
-  let producto: any = null;
+	let producto: any = null;
+	let imagenActual = null;
 
-  onMount(async () => {
-    const productos = await loadProductosCSV();
-    const id = $page.url.pathname.split('/').pop();
-    producto = productos.find((p) => p.id === id);
-  });
+	// Función que actualiza el producto al cambiar el ID
+	function actualizarProducto(id: string) {
+		const todos = get(productos);
+		producto = todos.find((p) => p.id === id);
+		if (producto) {
+			imagenActual = `/${producto.imagen}`;
+		}
+	}
 
-  function volverAtras() {
-    history.back();
-  }
+	// Suscribirse al store $page para reaccionar al cambio de ID
+	const unsubscribe = page.subscribe(($page) => {
+		const id = $page.params.id;
+		if (id) actualizarProducto(id);
+	});
 
-  function abrirWhatsApp(nombre: string) {
-    const mensaje = `Hola, me interesa el producto: ${nombre}`;
-    const numero = '5491164521435';
-    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`, '_blank');
-  }
+	onDestroy(unsubscribe);
+
+	function volverAtras() {
+		history.back();
+	}
+
+	function abrirWhatsApp(nombre: string) {
+		const mensaje = `Hola, me interesa el producto: ${nombre}`;
+		const numero = '5491164521435';
+		window.open(`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`, '_blank');
+	}
 </script>
 
 {#if producto}
@@ -32,15 +45,37 @@
 
     <div class="flex flex-col lg:flex-row gap-8">
       <!-- Columna izquierda -->
-      <div class="lg:w-1/2 w-full flex flex-col items-center">
-        <img src={`/${producto.imagen}`} alt={producto.nombre} class="rounded-lg w-full object-contain h-96 mb-4" />
-        <div class="flex gap-2 justify-center">
-          <!-- Miniaturas (pueden reemplazarse por otras imágenes si existieran) -->
-          <img src={`/${producto.imagen}`} alt={producto.nombre} class="w-20 h-20 rounded object-cover" />
-          <img src={`/${producto.imagen2}`} alt={producto.nombre} class="w-20 h-20 rounded object-cover" />
-          <img src={`/${producto.imagen3}`} alt={producto.nombre} class="w-20 h-20 rounded object-cover" />
-        </div>
-      </div>
+<div class="lg:w-1/2 w-full flex flex-col items-center">
+  <!-- Imagen principal -->
+  <img src={imagenActual} alt={producto.nombre} class="rounded-lg w-full object-contain h-96 mb-4" />
+
+<!-- Miniaturas con botones accesibles -->
+<div class="flex gap-2 justify-center">
+  <button on:click={() => imagenActual = `/${producto.imagen}`} class="p-0 border-none bg-transparent">
+    <img
+      src={`/${producto.imagen}`}
+      alt="Miniatura 1"
+      class="w-20 h-20 rounded object-cover"
+    />
+  </button>
+
+  <button on:click={() => imagenActual = `/${producto.imagen2}`} class="p-0 border-none bg-transparent">
+    <img
+      src={`/${producto.imagen2}`}
+      alt="Miniatura 2"
+      class="w-20 h-20 rounded object-cover"
+    />
+  </button>
+
+  <button on:click={() => imagenActual = `/${producto.imagen3}`} class="p-0 border-none bg-transparent">
+    <img
+      src={`/${producto.imagen3}`}
+      alt="Miniatura 3"
+      class="w-20 h-20 rounded object-cover"
+    />
+  </button>
+</div>
+</div>
 
       <!-- Columna derecha -->
       <div class="lg:w-1/2 w-full">
