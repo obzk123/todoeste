@@ -4,7 +4,8 @@
 	{ nombre: 'Electrodomésticos', imagen: '/images/electrodomesticos.png' },
 	{ nombre: 'Hogar', imagen: '/images/hogar.jpg' },
 	{ nombre: 'Jardín y Herramientas', imagen: '/images/jardin.jpg' },
-	{ nombre: 'Celulares', imagen: '/images/celulares.png' }
+	{ nombre: 'Celulares', imagen: '/images/celulares.png' },
+	{ nombre: 'Deportes', imagen: '/images/celulares.png' }
 ];
 </script>
 

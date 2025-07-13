@@ -11,6 +11,7 @@
 		{ nombre: 'Hogar', ruta: '/productos?categoria=hogar' },
 		{ nombre: 'Jardín y Herramientas', ruta: '/productos?categoria=jardin' },
 		{ nombre: 'Celulares', ruta: '/productos?categoria=celulares' },
+        { nombre: 'Deportes', ruta: '/productos?categoria=deportes' },
 		{ nombre: 'Acerca de', ruta: '/acerca' }
 	];
 
