@@ -33,12 +33,12 @@
     <div class="flex flex-col lg:flex-row gap-8">
       <!-- Columna izquierda -->
       <div class="lg:w-1/2 w-full flex flex-col items-center">
-        <img src={producto.imagen} alt={producto.nombre} class="rounded-lg w-full object-contain h-96 mb-4" />
+        <img src={`/${producto.imagen}`} alt={producto.nombre} class="rounded-lg w-full object-contain h-96 mb-4" />
         <div class="flex gap-2 justify-center">
           <!-- Miniaturas (pueden reemplazarse por otras imágenes si existieran) -->
-          <img src={producto.imagen} class="w-20 h-20 rounded object-cover" />
-          <img src={producto.imagen2} class="w-20 h-20 rounded object-cover" />
-          <img src={producto.imagen3} class="w-20 h-20 rounded object-cover" />
+          <img src={`/${producto.imagen}`} alt={producto.nombre} class="w-20 h-20 rounded object-cover" />
+          <img src={`/${producto.imagen2}`} alt={producto.nombre} class="w-20 h-20 rounded object-cover" />
+          <img src={`/${producto.imagen3}`} alt={producto.nombre} class="w-20 h-20 rounded object-cover" />
         </div>
       </div>
 
@@ -52,7 +52,7 @@
         <div class="mb-6">
           <h2 class="text-xl font-semibold mb-2 text-green-700">Especificaciones:</h2>
           <ul class="list-disc list-inside text-sm text-gray-800">
-			<span>${producto.descripcion_larga}</span>
+			        <span>{producto.descripcion_larga}</span>
           </ul>
         </div>
 
