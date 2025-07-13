@@ -81,13 +81,13 @@
       <div class="lg:w-1/2 w-full">
         <!-- Título y descripción -->
         <h1 class="text-3xl font-bold text-green-700 mb-2">{producto.nombre}</h1>
-        <p class="text-gray-700 mb-6">{producto.descripcion_corta}</p>
+        <p class="text-gray-700 mb-6">{producto.descripcion_larga}</p>
 
         <!-- Especificaciones -->
         <div class="mb-6">
           <h2 class="text-xl font-semibold mb-2 text-green-700">Especificaciones:</h2>
           <ul class="list-disc list-inside text-sm text-gray-800">
-			        <span>{producto.descripcion_larga}</span>
+			        <span>{producto.especificaciones}</span>
           </ul>
         </div>
 
